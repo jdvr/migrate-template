@@ -1,0 +1,30 @@
+version: '3'
+services:
+  database:
+    image: 'postgres:14-alpine'
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: localdb
+    volumes:
+      - database:/var/lib/postgresql/data
+
+  migrations:
+    build:
+      context: .
+    command:
+      - "up"
+    environment:
+      - DB_HOST=database
+      - DB_NAME=localdb
+      - DB_PORT=5432
+      - DB_USER=username
+      - DB_PASSWORD=password
+    depends_on:
+      - database
+
+
+volumes:
+  database:
